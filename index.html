@@ -10,6 +10,8 @@
     <audio autoplay loop>
         <source src="sounds/Lake Hylia - The Legend of Zelda Twilight Princess.mp3" type="audio/mpeg">
     </audio>
+    <button id="playButton">Play music</button>
+
     <div class="top-bar">
         <div id="health">Health: <span id="health-value">100</span></div>
         <div id="resources">Gold: <span id="gold-value">0</span></div>
@@ -31,5 +33,23 @@
         </div>
     </div>
     <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var audio = document.querySelector('audio');
+            var playButton = document.getElementById('playButton');
+    
+            playButton.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                    playButton.textContent = 'Pause';
+                } else {
+                    audio.pause();
+                    playButton.textContent = 'Play';
+                }
+            });
+        });
+    </script>
+    
 </body>
 </html>
