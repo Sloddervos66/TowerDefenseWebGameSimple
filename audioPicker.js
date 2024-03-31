@@ -30,4 +30,4 @@ function playNextTrack() {
 source.src = music[currentTrackIndex]; // Set initial source
 audio.load(); // Load the initial audio source
 
-audio.addEventListener('ended', playNextTrack);
+audio.addEventListener('ended', playNextTrack());
