@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower Defense Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <audio autoplay loop>
+        <source src="sounds/Lake Hylia - The Legend of Zelda Twilight Princess.mp3" type="audio/mpeg">
+    </audio>
+    <div class="top-bar">
+        <div id="health">Health: <span id="health-value">100</span></div>
+        <div id="resources">Gold: <span id="gold-value">0</span></div>
+    </div>
+    <div class="game-container">
+        <canvas id="game-canvas" width="800" height="600"></canvas>
+        <div class="sidebar">
+            <h2>Towers</h2>
+            <ul id="towerList">
+
+            </ul>
+        </div>
+        <!-- Sidebar to display enemy information -->
+        <div id="sidebar">
+            <h2>Enemies</h2>
+            <ul id="enemy-list">
+                <!-- Enemy information will be dynamically added here -->
+            </ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
