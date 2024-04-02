@@ -78,9 +78,9 @@ const sniperTower = new Tower("Sniper tower", 5, 5, 30, 7, 15, "red");
 const bombTower = new Tower("Bomb Tower", 3, 10, 40, 3, 20, "black");
 
 // Every enemy
-const basicEnemy = new Enemy("Basic enemy", 10, 1, 2.5, 1, "green");
-const tankyEnemy = new Enemy("Tanky enemy", 100, 10, 1, 5, "blue");
-const fastEnemy = new Enemy("Fast enemy", 5, 2, 5, 3, "orange");
+const basicEnemy = new Enemy("Basic enemy", 10, 1, 2.5, 5, "green");
+const tankyEnemy = new Enemy("Tanky enemy", 100, 10, 1, 15, "blue");
+const fastEnemy = new Enemy("Fast enemy", 5, 2, 5, 10, "orange");
 const bossEnemy = new Enemy("Boss enemy", 250, 50, 0.5, 90, "yellow");
 
 // All enemies and towers in lists
