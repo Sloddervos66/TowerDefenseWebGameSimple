@@ -11,6 +11,7 @@ const healthPlayerElement = document.getElementById('health-value');
 const goldPlayerElement = document.getElementById('gold-value');
 const nextWaveButton = document.getElementById('next-wave-btn');
 const startGameButton = document.getElementById('start-game-btn');
+const currentWaveElement = document.getElementById('currentWave');
 
 const gridSize = 40;
 const canvasWidth = canvas.width;
@@ -656,6 +657,7 @@ function gameLoop() {
 function updateUI() {
     healthPlayerElement.innerHTML = playerHP;
     goldPlayerElement.innerHTML = playerGold;
+    currentWaveElement.innerHTML = `Current wave: ${currentWave + 1}`;
 }
 
 // Start game
