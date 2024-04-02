@@ -3,36 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tower Defense Game</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script defer src="javaScript/gameLogic.js" type="module"></script>
+    <script defer src="javaScript/audioPicker.js"></script>
+    <title>Tower defense game</title>
 </head>
 <body>
+    <div id="start-game-container">
+        <button id="start-game-btn">Start game!</button>
+    </div>
     <audio id="audioPlayer" autoplay>
         <source id="sourceMusic" type="audio/mpeg">
     </audio>
-    <button id="playButton">Play music</button>
-
-    <div class="top-bar">
-        <div id="health">Health: <span id="health-value">100</span></div>
-        <div id="resources">Gold: <span id="gold-value">0</span></div>
-    </div>
-    <div class="game-container">
-        <canvas id="game-canvas" width="800" height="600"></canvas>
-        <div class="sidebar">
-            <h2>Towers</h2>
-            <ul id="towerList">
-
-            </ul>
+    <div id="entire-game-container" style="display: none">
+        <div class="top-bar">
+            <div id="health">Health: <span id="health-value">100</span></div>
+            <div id="resources">Gold: <span id="gold-value">0</span></div>
+            <div id="message"></div>
+            <button id="next-wave-btn">
+                <i class="fa fa-play"></i> Next Wave
+            </button>
         </div>
-        <!-- Sidebar to display enemy information -->
-        <div id="sidebar">
-            <h2>Enemies</h2>
-            <ul id="enemy-list">
-                <!-- Enemy information will be dynamically added here -->
-            </ul>
+        <div class="game-container">
+            <canvas id="game-canvas" width="800" height="800"></canvas>
+            <div class="sidebar">
+                <h2>Towers</h2>
+                <ul id="towerList"></ul>
+            </div>
+            <!-- Sidebar to display enemy information -->
+            <div id="sidebar">
+                <h2>Enemies</h2>
+                <ul id="enemyList"></ul>
+            </div>
         </div>
     </div>
-    <script src="script.js"></script>
-    <script defer src="audioPicker.js"></script>
 </body>
 </html>
