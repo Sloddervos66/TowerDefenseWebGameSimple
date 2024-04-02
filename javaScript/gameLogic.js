@@ -657,7 +657,7 @@ function gameLoop() {
 function updateUI() {
     healthPlayerElement.innerHTML = playerHP;
     goldPlayerElement.innerHTML = playerGold;
-    currentWaveElement.innerHTML = `Current wave: ${currentWave + 1}`;
+    currentWaveElement.innerHTML = `Current wave: ${currentWave}`;
 }
 
 // Start game
