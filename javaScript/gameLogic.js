@@ -17,15 +17,11 @@ const gridSize = 40;
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 
+// Map ID
+let mapId;
+
 // Define path coordinates
-const pathCoordinates = [
-    [-1, 1], [1, 1], [1, 7], 
-    [4, 7], [4, 11], [1, 11], 
-    [1, 18], [8, 18], [8, 11], 
-    [12, 11], [12, 18], [17, 18], 
-    [17, 7], [10, 7], [10, 5],
-    [4, 5], [4, 2], [20, 2]
-];
+let pathCoordinates = [];
 
 // Game running or not
 let gameRunning = false;
@@ -66,20 +62,13 @@ function generateCoordinatesInBetween(coord1, coord2) {
     return coordinates;
 }
 
-for (let i = 0; i < pathCoordinates.length - 1; i++) {
-    const currentCoord = pathCoordinates[i];
-    const nextCoord = pathCoordinates[i + 1];
-    const coordinatesInBetween = generateCoordinatesInBetween(currentCoord, nextCoord);
-    allCoordinates.push(...coordinatesInBetween);
-}
-
 // Every tower
 const standardTower = new Tower("Archer Tower", 1, 1, 20, 5, 10, "green");
 const sniperTower = new Tower("Sniper tower", 5, 5, 30, 7, 15, "red");
 const bombTower = new Tower("Bomb Tower", 3, 10, 40, 3, 20, "black");
 
 // Every enemy
-const basicEnemy = new Enemy("Basic enemy", 10, 1, 2.5, 5, "green");
+const basicEnemy = new Enemy("Basic enemy", 10, 50, 2.5, 5, "green");
 const tankyEnemy = new Enemy("Tanky enemy", 100, 10, 1, 15, "blue");
 const fastEnemy = new Enemy("Fast enemy", 5, 2, 5, 10, "orange");
 const bossEnemy = new Enemy("Boss enemy", 250, 50, 0.5, 90, "yellow");
@@ -172,7 +161,7 @@ function populateEnemyList() {
         colourBox.style.backgroundColor = enemy.colour;
 
         const enemyText = document.createElement('span');
-        enemyText.textContent = `${enemy.name} - HP: ${enemy.health}, Gold: ${enemy.goldAmount}`;
+        enemyText.textContent = `${enemy.name} - HP: ${enemy.health}, Damage: ${enemy.damage}, Gold: ${enemy.goldAmount}`;
 
         listItem.appendChild(colourBox);
         listItem.appendChild(enemyText);
@@ -232,7 +221,10 @@ function spawnEnemies() {
 
         for (let i = 0; i < count; i++) {
             setTimeout(() => {
-                enemies.push(new Enemy(enemy.name, enemy.health, enemy.damage, enemy.speed, enemy.goldAmount, enemy.colour));
+                let newEnemy = new Enemy(enemy.name, enemy.health, enemy.damage, enemy.speed, enemy.goldAmount, enemy.colour);
+                newEnemy.setPosition(pathCoordinates[0][0], pathCoordinates[0][1]);
+
+                enemies.push(newEnemy);
             }, delay); // Use the current delay for setTimeout
             delay += wave.delay; // Increment delay for the next enemy in the wave
         }
@@ -601,8 +593,84 @@ function rgbToHex(r, g, b) {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
+function checkIfGameWon() {
+    if (currentWave >= waves.length) {
+        gameWon();
+    }
+}
+
+function gameWon() {
+    gameRunning = false;
+    
+    // Store the score in a cookie
+    setCookie(`Score_${mapId}`, currentWave * 100, 365);
+
+    // Create a black overlay div
+    const overlay = document.createElement('div');
+    overlay.classList.add('overlay');
+
+    // Retrieve score from cookie
+    const score = getCookie(`Score_${mapId}`);
+
+    // Create a div to display the score
+    const scoreDisplay = document.createElement('div');
+    scoreDisplay.textContent = `Score: ${score}`;
+    scoreDisplay.classList.add('score-display');
+
+    // Create the "Return to Main Menu" button
+    const mainMenuButton = document.createElement('button');
+    mainMenuButton.textContent = 'Return to Main Menu';
+    mainMenuButton.classList.add('main-menu-button');
+    mainMenuButton.addEventListener('click', () => {
+        // Redirect to the main menu page
+        window.location.href = 'main-menu.html';
+    });
+
+    // Create the "Try Again?" button
+    const tryAgainButton = document.createElement('button');
+    tryAgainButton.textContent = 'Try Again?';
+    tryAgainButton.classList.add('try-again-button');
+    tryAgainButton.addEventListener('click', () => {
+        // Reload the page to restart the game
+        window.location.reload();
+    });
+
+    // Append the elements to the overlay
+    overlay.appendChild(scoreDisplay);
+    overlay.appendChild(mainMenuButton);
+    overlay.appendChild(tryAgainButton);
+
+    // Append the overlay to the body
+    document.body.appendChild(overlay);
+}
+
+// Function to retrieve a specific cookie value
+function getCookie(cookieName) {
+    const name = cookieName + "=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookieArray = decodedCookie.split(';');
+    for(let i = 0; i <cookieArray.length; i++) {
+        let cookie = cookieArray[i];
+        while (cookie.charAt(0) == ' ') {
+            cookie = cookie.substring(1);
+        }
+        if (cookie.indexOf(name) == 0) {
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    return "";
+}
+
+function setCookie(cookieName, cookieValue, daysToExpire) {
+    const expirationDate = new Date();
+    expirationDate.setTime(expirationDate.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + expirationDate.toUTCString();
+    document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/";
+}
+
 function checkPlayerHP() {
     if (playerHP <= 0) {
+        playerHP = 0;
         stopGame();
     }
 }
@@ -610,13 +678,19 @@ function checkPlayerHP() {
 function stopGame() {
     gameRunning = false;
 
+    // Store the score in a cookie
+    setCookie(`Score_${mapId}`, currentWave * 100, 365);
+
     // Create a black overlay div
     const overlay = document.createElement('div');
     overlay.classList.add('overlay');
 
+    // Retrieve score from cookie
+    const score = getCookie(`Score_${mapId}`);
+
     // Create a div to display the score
     const scoreDisplay = document.createElement('div');
-    scoreDisplay.textContent = `Score: ${currentWave * 100}`; // Assuming playerGold holds the score
+    scoreDisplay.textContent = `Score: ${score}`;
     scoreDisplay.classList.add('score-display');
 
     // Create the "Try again?" button
@@ -642,6 +716,8 @@ function gameLoop() {
         return;
     }
 
+    console.log(mapId);
+
     handleTowerAttacks();
 
     updateEnemyLocation();
@@ -650,6 +726,7 @@ function gameLoop() {
     drawGame();
     updateUI();
     checkPlayerHP();
+    checkIfGameWon();
 
     requestAnimationFrame(gameLoop);
 }
@@ -668,7 +745,19 @@ function startGame() {
     gameLoop();
 }
 
-function startGameClicked() {
+function startGameClicked(pathCoordinatesDynamic) {
+    document.getElementById("map-options-container").style.display = "none";
+    pathCoordinates = pathCoordinatesDynamic; // Update pathCoordinates with the dynamic coordinates
+
+    console.log(pathCoordinates);
+
+    for (let i = 0; i < pathCoordinates.length - 1; i++) {
+        const currentCoord = pathCoordinates[i];
+        const nextCoord = pathCoordinates[i + 1];
+        const coordinatesInBetween = generateCoordinatesInBetween(currentCoord, nextCoord);
+        allCoordinates.push(...coordinatesInBetween);
+    }
+
     const startGameContainer = document.getElementById('start-game-container');
     startGameContainer.style.display = 'none';
 
@@ -687,4 +776,73 @@ function startGameClicked() {
     }
 }
 
-startGameButton.addEventListener('click', startGameClicked);
+function displayMapScores() {
+    const maps = [1, 2, 3];
+
+    maps.forEach(mapId => {
+        const score = getCookie(`Score_${mapId}`);
+        const scoreElement = document.getElementById(`score_map${mapId}`);
+
+        if (score) {
+            scoreElement.textContent = `Score: ${score}`;
+            scoreElement.style.display = 'block';
+        } else {
+            scoreElement.textContent = `Score: 0`;
+            scoreElement.style.display = 'block';
+        }
+    });
+}
+
+//startGameButton.addEventListener('click', startGameClicked);
+startGameButton.addEventListener("click", function() {
+    document.getElementById("start-game-container").style.display = "none";
+    document.getElementById("map-options-container").style.display = "block";
+    displayMapScores();
+});
+
+// Logic to handle map selection and starting the game
+// You can add event listeners to each map option to handle selection
+// For example:
+document.getElementById("map1").addEventListener("click", function() {
+    // Map 1
+    const pathCoordinatesMap1 = [
+        [-1, 1], [1, 1], [1, 7], 
+        [4, 7], [4, 11], [1, 11], 
+        [1, 18], [8, 18], [8, 11], 
+        [12, 11], [12, 18], [17, 18], 
+        [17, 7], [10, 7], [10, 5],
+        [4, 5], [4, 2], [20, 2]
+    ];
+
+    mapId = 1;
+
+    startGameClicked(pathCoordinatesMap1);
+});
+
+document.getElementById("map2").addEventListener("click", function() {
+    // Map 2
+    const pathCoordinatesMap2 = [
+        [-1, 2], [3, 2], [3, 6],
+        [7, 6], [7, 12], [15, 12],
+        [15, 8], [18, 8], [18, 15],
+        [10, 15], [10, 18], [20, 18]
+    ];
+
+    mapId = 2;
+
+    startGameClicked(pathCoordinatesMap2);
+});
+
+document.getElementById("map3").addEventListener("click", function() {
+    // Map 3
+    const pathCoordinatesMap3 = [
+        [-1, 5], [2, 5], [2, 10],
+        [6, 10], [6, 3], [14, 3],
+        [14, 7], [16, 7], [16, 14],
+        [10, 14], [10, 18], [20, 18]
+    ];
+
+    mapId = 3;
+
+    startGameClicked(pathCoordinatesMap3);
+});

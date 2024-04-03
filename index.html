@@ -13,6 +13,30 @@
     <div id="start-game-container">
         <button id="start-game-btn">Start game!</button>
     </div>
+
+    <!-- Container for map options -->
+    <div id="map-options-container" style="display: none;">
+        <h2>Choose a Map</h2>
+        <div class="map-option" id="map1">
+            <h3>Map 1</h3>
+            <p>Standard galore</p>
+            <p id="score_map1" style="display: none;"></p>
+            <img src="assets/map1.png" alt="Map 1">
+        </div>
+        <div class="map-option" id="map2">
+            <h3>Map 2</h3>
+            <p>Fast galore</p>
+            <p id="score_map2" style="display: none;"></p>
+            <img src="assets/map2.png" alt="Map 2">
+        </div>
+        <div class="map-option" id="map3">
+            <h3>Map 3</h3>
+            <p>Tank galore</p>
+            <p id="score_map3" style="display: none;"></p>
+            <img src="assets/map3.png" alt="Map 3">
+        </div>
+    </div>
+
     <audio id="audioPlayer" autoplay>
         <source id="sourceMusic" type="audio/mpeg">
     </audio>
@@ -22,6 +46,9 @@
             <div id="resources">Gold: <span id="gold-value">0</span></div>
             <div id="currentWave"></div>
             <div id="message"></div>
+            <button id="map-selection-btn">
+                &#11164; Main menu
+            </button>
             <button id="next-wave-btn">
                 <i class="fa fa-play"></i> Next Wave
             </button>
