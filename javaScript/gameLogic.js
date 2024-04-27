@@ -68,7 +68,7 @@ const sniperTower = new Tower("Sniper tower", 5, 5, 30, 7, 15, "red");
 const bombTower = new Tower("Bomb Tower", 3, 10, 40, 3, 20, "black");
 
 // Every enemy
-const basicEnemy = new Enemy("Basic enemy", 10, 50, 2.5, 5, "green");
+const basicEnemy = new Enemy("Basic enemy", 10, 1, 1, 5, "green");
 const tankyEnemy = new Enemy("Tanky enemy", 100, 10, 1, 15, "blue");
 const fastEnemy = new Enemy("Fast enemy", 5, 2, 5, 10, "orange");
 const bossEnemy = new Enemy("Boss enemy", 250, 50, 0.5, 90, "yellow");
@@ -79,7 +79,7 @@ const allEnemies = [basicEnemy, tankyEnemy, fastEnemy, bossEnemy];
 
 // Waves
 const waves = [
-    { enemies: [{ type: basicEnemy, count: 5 }], delay: 2000 },
+    { enemies: [{ type: basicEnemy, count: 1 }], delay: 2000 },
     { enemies: [{ type: tankyEnemy, count: 2 }, { type: basicEnemy, count: 3 }], delay: 2000 },
     { enemies: [{ type: basicEnemy, count: 5 }, { type: fastEnemy, count: 3 }], delay: 2000 },
     { enemies: [{ type: fastEnemy, count: 3 }, { type: tankyEnemy, count: 2 }, { type: fastEnemy, count: 3 }], delay: 2000},
@@ -233,15 +233,10 @@ function spawnEnemies() {
     const checkCompletion = setInterval(() => {
         if (enemies.length === 0) {
             nextWaveButton.disabled = false;
+            currentWave++;
             clearInterval(checkCompletion);
         }
     }, 1000);
-
-    currentWave++;
-
-    if (currentWave >= waves.length) {
-        currentWave = 0;
-    }
 }
 
 function moveEnemy(enemy, deltaTime) {
@@ -595,6 +590,7 @@ function rgbToHex(r, g, b) {
 
 function checkIfGameWon() {
     if (currentWave >= waves.length) {
+        currentWave = waves.length;
         gameWon();
     }
 }
@@ -622,8 +618,12 @@ function gameWon() {
     mainMenuButton.textContent = 'Return to Main Menu';
     mainMenuButton.classList.add('main-menu-button');
     mainMenuButton.addEventListener('click', () => {
-        // Redirect to the main menu page
-        window.location.href = 'main-menu.html';
+        const mapOptionsContainer = document.getElementById('map-options-container');
+        const entireGameContainer = document.getElementById('entire-game-container');
+
+        mapOptionsContainer.style.display = 'block';
+        entireGameContainer.style.display = 'none';
+        overlay.remove();
     });
 
     // Create the "Try Again?" button
@@ -632,7 +632,9 @@ function gameWon() {
     tryAgainButton.classList.add('try-again-button');
     tryAgainButton.addEventListener('click', () => {
         // Reload the page to restart the game
-        window.location.reload();
+        overlay.remove();
+
+        resetGame();
     });
 
     // Append the elements to the overlay
@@ -693,21 +695,67 @@ function stopGame() {
     scoreDisplay.textContent = `Score: ${score}`;
     scoreDisplay.classList.add('score-display');
 
+    // Create the "Return to Main Menu" button
+    const mainMenuButton = document.createElement('button');
+    mainMenuButton.textContent = 'Return to Main Menu';
+    mainMenuButton.classList.add('main-menu-button');
+    mainMenuButton.addEventListener('click', () => {
+        const mapOptionsContainer = document.getElementById('map-options-container');
+        const entireGameContainer = document.getElementById('entire-game-container');
+
+        mapOptionsContainer.style.display = 'block';
+        entireGameContainer.style.display = 'none';
+
+        towerList.innerHTML = '';
+        enemyList.innerHTML = '';
+
+        overlay.remove();
+        return;
+    });
+
     // Create the "Try again?" button
     const tryAgainButton = document.createElement('button');
     tryAgainButton.textContent = 'Try again?';
     tryAgainButton.classList.add('try-again-button');
     tryAgainButton.addEventListener('click', () => {
         // Reload the page to restart the game
-        window.location.reload();
+        overlay.remove();
+        resetGame();
+        return;
     });
 
     // Append the button to the overlay
     overlay.appendChild(scoreDisplay);
+    overlay.appendChild(mainMenuButton);
     overlay.appendChild(tryAgainButton);
 
     // Append the overlay to the body
     document.body.appendChild(overlay);
+}
+
+// Function to reset the game state
+function resetGame() {
+    // Reset game-related variables
+    towers = [];
+    enemies = [];
+    currentWave = 0;
+    playerHP = 100;
+    playerGold = 100;
+    gameRunning = true;
+
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    towerList.innerHTML = '';
+    enemyList.innerHTML = '';
+
+    // Reset UI elements
+    healthPlayerElement.innerHTML = playerHP;
+    goldPlayerElement.innerHTML = playerGold;
+    currentWaveElement.innerHTML = `Current wave: ${currentWave + 1}/${waves.length}`;
+
+    // Start game
+    startGame();
 }
 
 // Game loop so it keeps running
@@ -715,8 +763,6 @@ function gameLoop() {
     if (!gameRunning) {
         return;
     }
-
-    console.log(mapId);
 
     handleTowerAttacks();
 
@@ -728,13 +774,19 @@ function gameLoop() {
     checkPlayerHP();
     checkIfGameWon();
 
+    // Remove any existing overlay
+    const existingOverlay = document.querySelectorAll('.overlay');
+    existingOverlay.forEach(overlay => {
+        overlay.remove();
+    });
+
     requestAnimationFrame(gameLoop);
 }
 
 function updateUI() {
     healthPlayerElement.innerHTML = playerHP;
     goldPlayerElement.innerHTML = playerGold;
-    currentWaveElement.innerHTML = `Current wave: ${currentWave}`;
+    currentWaveElement.innerHTML = `Current wave: ${currentWave + 1}`;
 }
 
 // Start game
@@ -748,8 +800,6 @@ function startGame() {
 function startGameClicked(pathCoordinatesDynamic) {
     document.getElementById("map-options-container").style.display = "none";
     pathCoordinates = pathCoordinatesDynamic; // Update pathCoordinates with the dynamic coordinates
-
-    console.log(pathCoordinates);
 
     for (let i = 0; i < pathCoordinates.length - 1; i++) {
         const currentCoord = pathCoordinates[i];

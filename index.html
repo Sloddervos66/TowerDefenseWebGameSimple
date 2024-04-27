@@ -7,11 +7,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script defer src="javaScript/gameLogic.js" type="module"></script>
     <script defer src="javaScript/audioPicker.js"></script>
+    <script defer src="javaScript/encrypt_decode.js"></script>
     <title>Tower defense game</title>
 </head>
 <body>
     <div id="start-game-container">
-        <button id="start-game-btn">Start game!</button>
+        <button id="start-game-btn">Start game!</button><br><br>
+        <button id="encrypt">Encrypt text!</button>
+    </div>
+
+    <div id="encrypt-decode-container" style="display: none;">
+        <div id="encrypt-container">
+            <h2>Choose a sentence you want to encrypt!</h2>
+            <input type="text" id="inputTextEncrypter" placeholder="Put your sentence here!"><br>
+            <button onclick="encryptUnreadable()">Click here to encrypt the text in an unreadable state!</button>
+            <button onclick="encryptDecoder()">Click here to encrypt the text for the decoder (wherever that may be on this site)!</button>
+            <p id="encryptedText"></p>
+        </div>
+
+        <div id="decode-container">
+            <h2>Choose a sentence you want to decrypt!</h2>
+            <input type="text" id="inputTextDecoder" placeholder="Put your sentence here!"><br>
+            <button onclick="decodeText()">Click here to decode the text to a normal sentence!</button>
+            <p id="decodedText"></p>
+        </div>
     </div>
 
     <!-- Container for map options -->
