@@ -1,6 +1,7 @@
 const encryptTextButton = document.getElementById('encrypt');
 const copyTextEncoderButton = document.getElementById('copyTextEncoderBtn');
 const copyTextDecoderButton = document.getElementById('copyTextDecoderBtn');
+const clearButton = document.getElementById('clearButton');
 
 // Set default input field values when the page loads
 document.addEventListener("DOMContentLoaded", function() {
@@ -45,7 +46,7 @@ const steganographyUnreadable = (str) => {
 // Function to turn a sentence into steganography that is easy to decode
 const steganographyForDecoding = (str) => {
     let output = '';
-    const allWordsArray = str.toLowerCase().split(' ');
+    const allWordsArray = str.split(' ');
 
     let longestWord = 0;
 
@@ -73,7 +74,7 @@ const steganographyForDecoding = (str) => {
 // Function to turn steganography into sentence
 const steganographyDecoder = (str) => {
     let output = '';
-    const allWordsArray = str.toLowerCase().split(' ');
+    const allWordsArray = str.split(' ');
 
     let longestWord = 0;
 
@@ -211,3 +212,32 @@ const decodeText = () => {
 
     copyTextDecoderButton.style.display = 'block';
 }
+
+
+clearButton.addEventListener('click', () => {
+    const encoderInput = document.getElementById('inputTextEncrypter');
+    const decoderInput = document.getElementById('inputTextDecoder');
+
+    const encoderP = document.getElementById('encryptedText');
+    const decoderP = document.getElementById('decodedText');
+
+    const encoderTextButton = document.getElementById('copyTextEncoderBtn');
+    const decoderTextButton = document.getElementById('copyTextDecoderBtn');
+
+    const inputArray = [encoderInput, decoderInput];
+    const pArray = [encoderP, decoderP];
+    const buttonArray = [encoderTextButton, decoderTextButton];
+
+    inputArray.forEach(input => {
+        input.value = '';
+    });
+
+    pArray.forEach(p => {
+        p.textContent = '';
+        p.style.display = 'none';
+    });
+
+    buttonArray.forEach(button => {
+        button.style.display = 'none';
+    });
+});
