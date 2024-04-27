@@ -1,4 +1,12 @@
 const encryptTextButton = document.getElementById('encrypt');
+const copyTextEncoderButton = document.getElementById('copyTextEncoderBtn');
+const copyTextDecoderButton = document.getElementById('copyTextDecoderBtn');
+
+// Set default input field values when the page loads
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("inputTextEncrypter").value = ""; // Default value for encryption input
+    document.getElementById("inputTextDecoder").value = ""; // Default value for decryption input
+});
 
 encryptTextButton.addEventListener('click', () => {
     const encryptContainer = document.getElementById('encrypt-decode-container');
@@ -109,6 +117,47 @@ function askIfEmptyInput(inputField) {
     }
 }
 
+function copyTextEncoder() {
+    const copyText = document.getElementById('encryptedText').innerText;
+
+    const textArea = document.createElement('textarea');
+    textArea.value = copyText;
+    document.body.appendChild(textArea);
+
+    textArea.select();
+    textArea.setSelectionRange(0, 99999);
+
+    navigator.clipboard.writeText(textArea.value);
+
+    document.body.removeChild(textArea);
+
+    const tooltip = document.getElementById("myTooltip");
+    tooltip.innerHTML = "Copied: " + copyText;
+}
+
+function copyTextDecoder() {
+    const copyText = document.getElementById('decodedText').innerText;
+
+    const textArea = document.createElement('textarea');
+    textArea.value = copyText;
+    document.body.appendChild(textArea);
+
+    textArea.select();
+    textArea.setSelectionRange(0, 99999);
+
+    navigator.clipboard.writeText(textArea.value);
+
+    document.body.removeChild(textArea);
+
+    const tooltip = document.getElementById("myTooltip");
+    tooltip.innerHTML = "Copied: " + copyText;
+}
+
+function outFunc() {
+    var tooltip = document.getElementById("myTooltip");
+    tooltip.innerHTML = "Copy to clipboard";
+}
+
 const encryptUnreadable = () => {
     const input = document.getElementById('inputTextEncrypter');
     const inputValue = input.value;
@@ -123,6 +172,8 @@ const encryptUnreadable = () => {
     output.style.border = '1px solid #000';
 
     askIfEmptyInput(input);
+
+    copyTextEncoderButton.style.display = 'block';
 }
 
 const encryptDecoder = () => {
@@ -139,6 +190,8 @@ const encryptDecoder = () => {
     output.style.border = '1px solid #000';
 
     askIfEmptyInput(input);
+
+    copyTextEncoderButton.style.display = 'block';
 }
 
 const decodeText = () => {
@@ -155,4 +208,6 @@ const decodeText = () => {
     output.style.border = '1px solid #000';
 
     askIfEmptyInput(input);
+
+    copyTextDecoderButton.style.display = 'block';
 }

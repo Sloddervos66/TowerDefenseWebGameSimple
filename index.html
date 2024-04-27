@@ -16,20 +16,32 @@
         <button id="encrypt">Encrypt text!</button>
     </div>
 
+    <!-- Container for encrypting and decoding -->
     <div id="encrypt-decode-container" style="display: none;">
         <div id="encrypt-container">
             <h2>Choose a sentence you want to encrypt!</h2>
             <input type="text" id="inputTextEncrypter" placeholder="Put your sentence here!"><br>
             <button onclick="encryptUnreadable()">Click here to encrypt the text in an unreadable state!</button>
-            <button onclick="encryptDecoder()">Click here to encrypt the text for the decoder (wherever that may be on this site)!</button>
+            <button onclick="encryptDecoder()">Click here to encrypt the text for the decoder!</button>
             <p id="encryptedText"></p>
+            <div class="tooltip">
+                <button style="display: none;" id="copyTextEncoderBtn" onclick="copyTextEncoder()" onmouseout="outFunc()">
+                    <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                    Copy text
+                </button>
+            </div>
         </div>
 
         <div id="decode-container">
             <h2>Choose a sentence you want to decrypt!</h2>
             <input type="text" id="inputTextDecoder" placeholder="Put your sentence here!"><br>
             <button onclick="decodeText()">Click here to decode the text to a normal sentence!</button>
-            <p id="decodedText"></p>
+            <p id="decodedText"></p><div class="tooltip">
+                <button style="display: none;" id="copyTextDecoderBtn" onclick="copyTextDecoder()" onmouseout="outFunc()">
+                    <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                    Copy text
+                </button>
+            </div>
         </div>
     </div>
 
