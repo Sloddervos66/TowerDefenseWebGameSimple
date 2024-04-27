@@ -11,7 +11,7 @@ encryptTextButton.addEventListener('click', () => {
 // Function to turn a sentence into steganography that is more difficult to decode 
 const steganographyUnreadable = (str) => {
     let output = '';
-    const allWordsArray = str.toLowerCase().split(' ');
+    const allWordsArray = str.split(' ');
 
     let longestWord = 0;
 
@@ -89,9 +89,6 @@ const steganographyDecoder = (str) => {
 
     // Replace any 'æ' characters with spaces
     output = output.replace(/æ/g, '');
-
-    // Capitalize the first letter of each sentence
-    output = output.split('. ').map(sentence => sentence.charAt(0).toUpperCase() + sentence.slice(1)).join('. ');
 
     return output.trim();
 };  
